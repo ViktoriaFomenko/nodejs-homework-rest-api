@@ -1,5 +1,7 @@
 const express = require("express");
 
+const { isValidObjectId } = require("mongoose")
+
 const router = express.Router();
 
 const Joi = require("joi");
@@ -14,9 +16,20 @@ const addSchema = Joi.object({
   phone: Joi.string().required(),
 });
 
+const isValidId = (req, res, next) => {
+  const { id } = req.params;
+  const result = isValidObjectId(id);
+  if (!result) {
+    next(RequestError(400, "Invalid id format"))
+  }
+  next()
+}
+
+
 router.get("/", async (req, res, next) => {
   try {
-    const result = await contacts.listContacts();
+
+    const result = await Contact.find()
     res.json(result);
   } catch (error) {
     next(error);
@@ -26,7 +39,7 @@ router.get("/", async (req, res, next) => {
 router.get("/:contactId", async (req, res, next) => {
   try {
     const { contactId } = req.params;
-    const result = await contacts.getContactById(contactId);
+    const result = await Contact.findById(contactId);
     if (!result) {
       throw RequestError(404, "Not found");
     }

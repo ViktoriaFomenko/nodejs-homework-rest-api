@@ -1,6 +1,7 @@
 const { Schema, model } = require("mongoose")
 
-// const { handleErrors } = require("../helpers")
+const { handleSaveError } = require("../helpers")
+
 
 
 const contactSchema = new Schema({
@@ -18,15 +19,16 @@ const contactSchema = new Schema({
     type: Boolean,
     default: false,
   },
-})
+}, { versionKey: false, timestamps: true })
+
+
+
+contactSchema.post("save", handleSaveError);
+
 
 const Contact = model("contact", contactSchema)
 
 module.exports = Contact
-
-
-
-
 
 // const fs = require("fs/promises");
 // const path = require("path");
