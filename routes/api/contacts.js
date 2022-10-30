@@ -12,7 +12,7 @@ const router = express.Router();
 
 
 
-router.get("/", ctrlWrapper(ctrl.getAll))
+router.get("/", authenticate, ctrlWrapper(ctrl.getAll))
 
 router.get("/:id", authenticate, isValidId, ctrlWrapper(ctrl.getById))
 
